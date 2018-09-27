@@ -27,6 +27,6 @@ public class RelifeApp implements RelifeAppHandler {
             }
         }
 
-        return response;
+        return response == null ? new RelifeResponse(200) : response;
     }
 }

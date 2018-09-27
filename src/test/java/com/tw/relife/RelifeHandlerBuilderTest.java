@@ -73,4 +73,17 @@ public class RelifeHandlerBuilderTest {
                         request -> { throw new SampleNotValidException(); }
                 ).build());
     }
+
+    @Test
+    void should_return_200_status_response_when_return_null_in_handler() throws NoSuchFieldException, IllegalAccessException {
+        RelifeAppHandler handler = new RelifeMvcHandlerBuilder().
+                addAction(
+                        "/path",
+                        RelifeMethod.GET,
+                        request -> null
+                ).build();
+        RelifeApp app = new RelifeApp(handler);
+        RelifeResponse response = app.process(new RelifeRequest("/path", RelifeMethod.GET));
+        assertEquals(200, response.getStatus());
+    }
 }

@@ -22,7 +22,7 @@ public class RelifeApp implements RelifeAppHandler {
             response = new RelifeResponse(500);
         }
 
-        response = response == null ? new RelifeResponse(200) : response;
+        response = response == null ? handler.process(request) : response;
         return response;
     }
 }

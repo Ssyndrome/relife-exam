@@ -1,10 +1,12 @@
 package com.tw.relife;
 
 import com.tw.relife.builder.RelifeMvcHandlerBuilder;
+import com.tw.relife.exception.SampleNotValidException;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertIterableEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class RelifeHandlerBuilderTest {
     @Test
@@ -34,5 +36,31 @@ public class RelifeHandlerBuilderTest {
         RelifeResponse response = app.process(new RelifeRequest("/path", RelifeMethod.GET));
         assertEquals(404, response.getStatus());
 
+    }
+
+    @Test
+    void should_get_500_request_when_throw_exception_in_handler() throws NoSuchFieldException, IllegalAccessException {
+        RelifeAppHandler handler = new RelifeMvcHandlerBuilder().
+                addAction(
+                        "/path",
+                        RelifeMethod.GET,
+                        request -> { throw new RuntimeException("error occurred"); }
+                ).build();
+        RelifeApp app = new RelifeApp(handler);
+        RelifeResponse response = app.process(new RelifeRequest("/path", RelifeMethod.GET));
+        assertEquals(500, response.getStatus());
+    }
+
+    @Test
+    void should_get_related_request_when_throw_annotated_exception_in_handler() throws NoSuchFieldException, IllegalAccessException {
+        RelifeAppHandler handler = new RelifeMvcHandlerBuilder().
+                addAction(
+                        "/path",
+                        RelifeMethod.GET,
+                        request -> { throw new SampleNotValidException(); }
+                ).build();
+        RelifeApp app = new RelifeApp(handler);
+        RelifeResponse response = app.process(new RelifeRequest("/path", RelifeMethod.GET));
+        assertEquals(666, response.getStatus());
     }
 }

@@ -5,7 +5,6 @@ import com.tw.relife.exception.SampleNotValidException;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertIterableEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class RelifeHandlerBuilderTest {
@@ -39,6 +38,30 @@ public class RelifeHandlerBuilderTest {
     }
 
     @Test
+    void should_return_404_response_when_nothing_path_match_handler() throws NoSuchFieldException, IllegalAccessException {
+        RelifeAppHandler handler = new RelifeMvcHandlerBuilder()
+                .addAction(
+                        "/path/apple",
+                        RelifeMethod.GET,
+                        request -> new RelifeResponse(200, "Hello", "text/plain")).build();
+        RelifeApp app = new RelifeApp(handler);
+        RelifeResponse response = app.process(new RelifeRequest("/path", RelifeMethod.GET));
+        assertEquals(404, response.getStatus());
+    }
+
+    @Test
+    void should_return_404_response_when_nothing_method_match_handler() throws NoSuchFieldException, IllegalAccessException {
+        RelifeAppHandler handler = new RelifeMvcHandlerBuilder()
+                .addAction(
+                        "/path",
+                        RelifeMethod.POST,
+                        request -> new RelifeResponse(200, "Hello", "text/plain")).build();
+        RelifeApp app = new RelifeApp(handler);
+        RelifeResponse response = app.process(new RelifeRequest("/path", RelifeMethod.GET));
+        assertEquals(404, response.getStatus());
+    }
+
+    @Test
     void should_get_500_request_when_throw_exception_in_handler() throws NoSuchFieldException, IllegalAccessException {
         RelifeAppHandler handler = new RelifeMvcHandlerBuilder().
                 addAction(
@@ -65,12 +88,32 @@ public class RelifeHandlerBuilderTest {
     }
 
     @Test
-    void should_throw_IllegalArgumentException_having_null_parameter_when_addAction() {
+    void should_throw_IllegalArgumentException_having_null_path_parameter_when_addAction() {
         assertThrows(IllegalArgumentException.class, () -> new RelifeMvcHandlerBuilder().
                 addAction(
                         null,
                         RelifeMethod.GET,
                         request -> { throw new SampleNotValidException(); }
+                ).build());
+    }
+
+    @Test
+    void should_throw_IllegalArgumentException_having_null_method_parameter_when_addAction() {
+        assertThrows(IllegalArgumentException.class, () -> new RelifeMvcHandlerBuilder().
+                addAction(
+                        "/path",
+                        null,
+                        request -> { throw new SampleNotValidException(); }
+                ).build());
+    }
+
+    @Test
+    void should_throw_IllegalArgumentException_having_null_handler_parameter_when_addAction() {
+        assertThrows(IllegalArgumentException.class, () -> new RelifeMvcHandlerBuilder().
+                addAction(
+                        "/path",
+                        RelifeMethod.GET,
+                        null
                 ).build());
     }
 

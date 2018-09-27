@@ -1,30 +1,27 @@
 package com.tw.relife.builder;
 
-import com.sun.corba.se.impl.ior.OldJIDLObjectKeyTemplate;
 import com.tw.relife.Action;
 import com.tw.relife.RelifeAppHandler;
 import com.tw.relife.RelifeMethod;
-import com.tw.relife.repository.HandlerRepository;
+import com.tw.relife.impl.RelifeAppHandlerImpl;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 
 public class RelifeMvcHandlerBuilder {
 
-    private HandlerRepository handlerRepository;
+    private List<Action> actions = new ArrayList<>();
 
-    public RelifeMvcHandlerBuilder() {
-        this.handlerRepository = new HandlerRepository();
-    }
-
-    public HandlerRepository addAction(String path, RelifeMethod method, RelifeAppHandler handler) {
+    public RelifeMvcHandlerBuilder addAction(String path, RelifeMethod method, RelifeAppHandler handler) {
         checkIfNullParameter(path, method, handler);
-        handlerRepository.addAction(new Action(path, method, handler));
-        return handlerRepository;
+        actions.add(new Action(path, method, handler));
+        return this;
     }
 
-    public RelifeAppHandler build() throws NoSuchFieldException, IllegalAccessException {
-        return new HandlerRepository().build();
+    public RelifeAppHandler build() {
+        return new RelifeAppHandlerImpl().setActions(this.actions);
     }
 
     private void checkIfNullParameter(Object... objects) {

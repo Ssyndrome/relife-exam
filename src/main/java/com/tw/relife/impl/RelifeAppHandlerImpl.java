@@ -22,4 +22,10 @@ public class RelifeAppHandlerImpl implements RelifeAppHandler {
         });
         return response;
     }
+
+    public RelifeAppHandler setActions(List<Action> addedActions) {
+        actions.addAll(addedActions);
+        return this;
+    }
+
 }

@@ -26,4 +26,13 @@ public class RelifeHandlerBuilderTest {
         assertEquals(200, response.getStatus());
         assertEquals("Hello", response.getContent());
     }
+
+    @Test
+    void should_return_404_response_when_nothing_match_handler() throws NoSuchFieldException, IllegalAccessException {
+        RelifeAppHandler handler = new RelifeMvcHandlerBuilder().build();
+        RelifeApp app = new RelifeApp(handler);
+        RelifeResponse response = app.process(new RelifeRequest("/path", RelifeMethod.GET));
+        assertEquals(404, response.getStatus());
+
+    }
 }

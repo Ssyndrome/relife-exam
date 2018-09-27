@@ -1,9 +1,6 @@
 package com.tw.relife.impl;
 
-import com.tw.relife.Action;
-import com.tw.relife.RelifeAppHandler;
-import com.tw.relife.RelifeRequest;
-import com.tw.relife.RelifeResponse;
+import com.tw.relife.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,16 +8,16 @@ import java.util.List;
 public class RelifeAppHandlerImpl implements RelifeAppHandler {
 
     private List<Action> actions = new ArrayList<>();
-    private RelifeResponse response = new RelifeResponse(404);
 
     @Override
     public RelifeResponse process(RelifeRequest request) {
-        actions.forEach(action -> {
-            if (action.getPath().equals(request.getPath()) && action.getMethod().equals(request.getMethod())) {
-                response = action.getHandler().process(request);
-            }
-        });
-        return response;
+        Action notFoundAction = new Action("", RelifeMethod.GET, someRequest -> new RelifeResponse(404));
+        return actions.stream()
+                .filter(action ->
+                        action.getPath().equals(request.getPath()) && action.getMethod().equals(request.getMethod())
+                )
+                .findFirst()
+                .orElse(notFoundAction).getHandler().process(request);
     }
 
     public RelifeAppHandler setActions(List<Action> addedActions) {

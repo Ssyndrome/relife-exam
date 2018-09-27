@@ -1,6 +1,6 @@
 package com.tw.relife;
 
-import com.tw.relife.exception.SampleNotFoundException;
+import com.tw.relife.annotation.SampleNotFoundException;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;

@@ -1,7 +1,7 @@
 package com.tw.relife;
 
-import com.tw.relife.builder.RelifeMvcHandlerBuilder;
-import com.tw.relife.exception.SampleNotValidException;
+import com.tw.relife.annotation.RelifeMvcHandlerBuilder;
+import com.tw.relife.annotation.SampleNotValidException;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;

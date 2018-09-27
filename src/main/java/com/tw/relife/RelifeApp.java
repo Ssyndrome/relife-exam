@@ -1,7 +1,5 @@
 package com.tw.relife;
 
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
-
 public class RelifeApp implements RelifeAppHandler {
     private final RelifeAppHandler handler;
 
@@ -16,13 +14,15 @@ public class RelifeApp implements RelifeAppHandler {
     @Override
     public RelifeResponse process(RelifeRequest request) {
         // TODO: You can start here
+        RelifeResponse response = null;
+
         try {
             handler.process(request);
         } catch (Exception exception) {
-            RelifeResponse response = new RelifeResponse(500);
-            return response;
+            response = new RelifeResponse(500);
         }
-        RelifeResponse response = new RelifeResponse(200);
+
+        response = response == null ? new RelifeResponse(200) : response;
         return response;
     }
 }

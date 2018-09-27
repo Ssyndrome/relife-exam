@@ -7,7 +7,9 @@ import com.tw.relife.impl.RelifeAppHandlerImpl;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 public class HandlerRepository {
 
@@ -19,6 +21,7 @@ public class HandlerRepository {
     }
 
     public HandlerRepository addAction(String path, RelifeMethod method, RelifeAppHandler handler) {
+        checkIfNullParameter(path, method, handler);
         this.actions.add(new Action(path, method, handler));
         return this;
     }
@@ -31,5 +34,11 @@ public class HandlerRepository {
         privateRepository.set(handler, this.actions);
 
         return handler;
+    }
+
+    private void checkIfNullParameter(Object... objects) {
+        if (Arrays.stream(objects).anyMatch(Objects::isNull)) {
+            throw new IllegalArgumentException();
+        }
     }
 }

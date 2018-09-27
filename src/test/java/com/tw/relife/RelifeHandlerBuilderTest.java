@@ -63,4 +63,14 @@ public class RelifeHandlerBuilderTest {
         RelifeResponse response = app.process(new RelifeRequest("/path", RelifeMethod.GET));
         assertEquals(666, response.getStatus());
     }
+
+    @Test
+    void should_throw_IllegalArgumentException_having_null_parameter_when_addAction() {
+        assertThrows(IllegalArgumentException.class, () -> new RelifeMvcHandlerBuilder().
+                addAction(
+                        null,
+                        RelifeMethod.GET,
+                        request -> { throw new SampleNotValidException(); }
+                ).build());
+    }
 }

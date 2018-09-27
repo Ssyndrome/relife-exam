@@ -1,10 +1,11 @@
 package com.tw.relife;
 
+import com.tw.relife.exception.RelifeStatusCode;
+
 public class RelifeApp implements RelifeAppHandler {
     private final RelifeAppHandler handler;
 
     public RelifeApp(RelifeAppHandler handler) {
-        // TODO: You can start here
         if (handler == null) {
             throw new IllegalArgumentException();
         }
@@ -13,16 +14,19 @@ public class RelifeApp implements RelifeAppHandler {
 
     @Override
     public RelifeResponse process(RelifeRequest request) {
-        // TODO: You can start here
-        RelifeResponse response = null;
+        RelifeResponse response;
 
         try {
-            handler.process(request);
+            response = handler.process(request);
         } catch (Exception exception) {
-            response = new RelifeResponse(500);
+            if (exception.getClass().isAnnotationPresent(RelifeStatusCode.class)) {
+                int statusCode = exception.getClass().getAnnotation(RelifeStatusCode.class).value();
+                response = new RelifeResponse(statusCode);
+            } else {
+                response = new RelifeResponse(500);
+            }
         }
 
-        response = response == null ? handler.process(request) : response;
         return response;
     }
 }
